@@ -1,3 +1,50 @@
+<script>
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../firebase"; // Asegúrate de que este archivo esté configurado correctamente
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../firebase"; // Firestore para guardar datos adicionales
+
+export default {
+  data() {
+    return {
+      username: "", // Campo para el nombre de usuario
+      email: "",
+      password: "",
+    };
+  },
+  methods: {
+    async register() {
+      try {
+        // Crear usuario con Firebase Authentication
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          this.email,
+          this.password
+        );
+
+        // Agregar el nombre de usuario al perfil
+        await updateProfile(userCredential.user, {
+          displayName: this.username,
+        });
+
+        // Guardar datos adicionales en Firestore
+        const userId = userCredential.user.uid;
+        await setDoc(doc(db, "users", userId), {
+          username: this.username,
+          email: this.email,
+        });
+
+        alert("Registro exitoso");
+        this.$router.push("/login"); // Redirigir a la página de inicio de sesión
+      } catch (error) {
+        console.error("Error al registrar: ", error.message);
+        alert(`Error: ${error.message}`);
+      }
+    },
+  },
+};
+</script>
+
 <template>
     <GuestLayout>
         <div class="register">
