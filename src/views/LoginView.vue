@@ -10,6 +10,7 @@
                 <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
                 <button type="submit">Iniciar</button>
             </form>
+            <br>
             <p>
                 No tienes cuenta? <a href="/register">Registrarse</a>
             </p>

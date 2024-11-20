@@ -3,13 +3,19 @@
         <div class="register">
             <!-- <img src="logo" alt="Logo" class="logo" /> -->
             <h2>Registro</h2>
-            <p>Hello, registrate para continuar</p>
+            <p>Hola, registrate para continuar</p>
             <form @submit.prevent="register">
                 <input type="text" placeholder="Usuario" v-model="username" required />
+                
                 <input type="email" placeholder="Email" v-model="email" required />
+                
                 <input type="password" placeholder="Contraseña" v-model="password" required />
+                
                 <button type="submit">Registrarse</button>
+                
             </form>
+            <br>
+            
             <p>
                 ¿Ya tienes una cuenta? <a href="/login">Iniciar Sesión</a>
             </p>
