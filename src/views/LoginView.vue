@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "../firebase"; // Asegúrate de importar Firestore
+import { auth, db, googleProvider } from "../firebase"; // Asegúrate de importar Firestore
 import { useUserStore } from "../stores/user";
 
 const email = ref("");
@@ -38,6 +38,34 @@ const login = async () => {
     alert("Correo o contraseña incorrectos.");
   }
 };
+
+// Inicio de sesión con Google
+const loginWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+
+    // Verificar si el usuario ya existe en Firestore
+    const userDoc = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userDoc);
+
+    if (!docSnap.exists()) {
+      // Si no existe, guardarlo en Firestore
+      await setDoc(userDoc, {
+        username: user.displayName,
+        email: user.email,
+      });
+    }
+
+    userStore.setUserName(user.displayName); // Guardar el nombre del usuario en el estado
+
+    router.push("/home"); // Redirigir al Home
+  } catch (error) {
+    console.error("Error al iniciar sesión con Google:", error.message);
+    alert("No se pudo iniciar sesión con Google.");
+  }
+};
+
 </script>
 <template>
     <GuestLayout>
@@ -46,14 +74,15 @@ const login = async () => {
             <h2>Iniciar Sesión</h2>
             <p>Hola, inicia sesión para continuar</p>
             <form @submit.prevent="login">
-<<<<<<< HEAD
-                <input type="email" placeholder="EMAIL" v-model="email" required />
-=======
                 <input type="email" placeholder="Email" v-model="email" required />
->>>>>>> dev_jose
                 <input type="password" placeholder="Contraseña" v-model="password" required />
                 <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
                 <button type="submit">Iniciar</button>
+                <br>
+                <button type="button" class="google-button" @click="loginWithGoogle">
+                <img src="@/assets/google.svg" alt="Google Logo" />
+                Google
+                </button>
             </form>
             <br>
             <p>
@@ -124,4 +153,30 @@ button:hover {
 .forgot-password:hover {
     text-decoration: underline;
 }
+
+.google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Espacio entre el logo y el texto */
+  padding: 10px 20px;
+  border: 1px solid #ccc; /* Borde gris claro */
+  border-radius: 5px; /* Bordes redondeados */
+  background-color: white; /* Fondo blanco */
+  font-size: 1rem;
+  color: #555; /* Texto gris oscuro */
+  cursor: pointer;
+  transition: all 0.3s ease; /* Transiciones suaves */
+}
+
+.google-button img {
+  width: 20px; /* Tamaño del logo */
+  height: 20px;
+}
+
+.google-button:hover {
+  border-color: #aaa; /* Cambiar el borde al pasar el mouse */
+  background-color: #f5f5f5; /* Fondo ligeramente más oscuro */
+}
+
 </style>
