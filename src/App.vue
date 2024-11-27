@@ -10,7 +10,8 @@ import { RouterView } from 'vue-router'
 
 <style>
 body {
-
+  font-family: "IBM Plex Sans", sans-serif;
   background-color: #f3f4f6;
 }
+
 </style>

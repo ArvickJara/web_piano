@@ -1,6 +1,6 @@
 <template>
   <div class="profile-view">
-    <h1 class="title">Perfil</h1>
+    <h1 class="title">Perfil de Usuario</h1>
     
     <!-- Foto de perfil -->
     <div class="profile-pic-container">
@@ -19,112 +19,187 @@
     <button class="save-btn">Guardar</button>
 
     <!-- Enlace para cerrar sesión -->
-    <a href="#" class="logout-link">Cerrar sesión</a>
+    <a href="#" class="logout-link" @click.prevent="logout">Cerrar sesión</a>
   </div>
 </template>
 
 <script>
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase"; // Ajusta la ruta a tu configuración de Firebase
+
 export default {
   name: "ProfileUserView",
+  methods: {
+    async logout() {
+      try {
+        await signOut(auth);
+        alert("Sesión cerrada con éxito");
+        this.$router.push("/");
+      } catch (error) {
+        console.error("Error al cerrar sesión:", error.message);
+        alert("Ocurrió un error al cerrar sesión. Intenta nuevamente.");
+      }
+    }
+  }
 };
 </script>
 
 <style scoped>
-/* Contenedor principal */
+/* Estilo general de la vista de perfil */
 .profile-view {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 60px); /* Altura total menos el NavBar */
   padding: 20px;
-  box-sizing: border-box;
+  background-color: #ffffff; /* Fondo blanco */
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  max-width: 400px; /* Ancho máximo para mejorar la presentación */
+  margin: auto;
+  overflow-x: auto;
 }
 
 /* Título */
 .title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #4630eb;
+  color: #4a4a4a; /* Gris oscuro */
+  font-size: 1.8rem;
   margin-bottom: 20px;
+  font-weight: 600;
 }
 
-/* Imagen de perfil */
+/* Estilo de la foto de perfil */
 .profile-pic-container {
-  margin: 20px auto;
-}
-.profile-pic {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  border: 2px solid #ddd;
-}
-
-/* Campo de nombre de usuario */
-.username-container {
+  margin-bottom: 15px;
   display: flex;
   justify-content: center;
-  align-items: center;
-  margin: 20px 0;
 }
+
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%; /* Forma circular */
+  border: 4px solid #6c63ff; /* Color de borde */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedor de nombre de usuario */
+.username-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
 .username-input {
-  padding: 10px;
-  width: 250px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
   font-size: 1rem;
+  padding: 8px 12px;
+  border: 2px solid #6c63ff;
+  border-radius: 8px;
+  outline: none;
+  background-color: #f8f9fa; /* Fondo claro */
+  color: #333;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 260px;
   margin-right: 10px;
 }
+
 .edit-btn {
+  background-color: #6c63ff;
+  color: #fff;
+  padding: 6px 10px;
   border: none;
-  background-color: transparent;
-  font-size: 1.2rem;
+  border-radius: 5px;
   cursor: pointer;
-  color: #4630eb;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.edit-btn:hover {
+  background-color: #5a54e1; /* Color más oscuro */
+  transform: scale(1.1);
 }
 
 /* Botón guardar */
 .save-btn {
-  padding: 10px 20px;
-  background-color: #4630eb;
-  color: white;
+  background-color: #6c63ff;
+  color: #fff;
+  padding: 8px 15px;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.save-btn:hover {
-  background-color: #3520c9;
+  transition: background-color 0.3s, transform 0.2s;
+  margin-bottom: 15px;
+  width: 100%;
+  max-width: 200px;
 }
 
-/* Enlace para cerrar sesión */
+.save-btn:hover {
+  background-color: #5a54e1; /* Color más oscuro */
+  transform: scale(1.05);
+}
+
+/* Estilo del enlace de cerrar sesión */
 .logout-link {
   display: block;
-  margin-top: 20px;
+  margin-top: 10px;
   text-decoration: none;
   font-size: 1rem;
-  color: #4630eb;
+  color: #6c63ff; /* Color del enlace */
+  font-weight: 600;
   cursor: pointer;
+  transition: color 0.3s;
 }
+
 .logout-link:hover {
+  color: #5a54e1;
   text-decoration: underline;
 }
 
-/* Ajustes específicos para pantallas grandes */
-@media (min-width: 1024px) {
+/* Media Queries para hacer la vista responsiva */
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .profile-pic {
+    width: 100px;
+    height: 100px;
+  }
+
+  .username-input,
+  .save-btn {
+    font-size: 0.9rem;
+  }
+
   .profile-view {
-    min-height: calc(100vh - 60px); /* Centrado verticalmente con NavBar */
-    padding-top: 0;
+    padding: 15px;
+    border-radius: 8px;
   }
 }
 
-/* Ajustes para pantallas pequeñas (móviles) */
-@media (max-width: 767px) {
-  .profile-view {
-    min-height: calc(100vh - 60px); /* Espacio suficiente para NavBar */
-    justify-content: flex-start; /* Contenido más cerca del centro */
-    padding-top: 40px; /* Espaciado desde la parte superior */
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.2rem;
+  }
+
+  .profile-pic {
+    width: 80px;
+    height: 80px;
+  }
+
+  .username-input {
+    padding: 6px;
+  }
+
+  .edit-btn,
+  .save-btn {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
+
+  .logout-link {
+    font-size: 0.9rem;
   }
 }
 </style>
