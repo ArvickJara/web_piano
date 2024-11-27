@@ -29,6 +29,7 @@ const router = createRouter({
       component: NavBarLayout,
       children: [
         { path: "perfil", name: "perfil", component: ProfileUserView },
+        { path: "historia", name: "historia", component: HistoriaView },
       ],
     },
 
