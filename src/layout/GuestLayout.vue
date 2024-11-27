@@ -31,6 +31,7 @@ import { RouterLink, RouterView } from 'vue-router'
 <style scoped>
 /* Header general */
 header {
+    justify-content: center;
     line-height: 1.5;
     max-height: 100vh;
 }

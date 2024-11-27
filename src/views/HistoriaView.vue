@@ -1,5 +1,4 @@
 <template>
-    <NavBarLayout>
       <section class="historia">
         <img src="https://via.placeholder.com/200" alt="Daniel Alomía Robles" class="profile-img" />
         <h2>Daniel Alomía Robles</h2>
@@ -9,7 +8,6 @@
           de origen francés y su madre era peruana...
         </p>
       </section>
-    </NavBarLayout>
   </template>
   
   <script>
