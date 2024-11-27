@@ -6,7 +6,7 @@ import { RouterLink, RouterView } from 'vue-router'
 <template>
 
     <header>
-        <img alt="Vue logo" class="logo" src="@/assets/Paisi.svg" width="300" height="115" />
+        <img alt="Udh logo" class="logo" src="@/assets/Paisi.svg" width="300" height="115" />
 
         <div class="wrapper">
 
@@ -18,9 +18,6 @@ import { RouterLink, RouterView } from 'vue-router'
     </header>
 
     <main>
-
-
-        <p>Logo</p>
 
         <div class="border">
             <RouterView />

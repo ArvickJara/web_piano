@@ -1,35 +1,44 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import GuestLayout from '@/layout/GuestLayout.vue'
-import LoginView from '@/views/LoginView.vue'
-import RegisterView from '@/views/RegisterView.vue'
+import { createRouter, createWebHistory } from "vue-router";
+
+// Layouts
+import GuestLayout from "@/layout/GuestLayout.vue";
+import NavBarLayout from "@/layout/NavBarLayout.vue";
+
+// Vistas
+import HomeView from "@/views/HomeView.vue";
+import LoginView from "@/views/LoginView.vue";
+import RegisterView from "@/views/RegisterView.vue";
+import HistoriaView from "@/views/HistoriaView.vue";
+import ProfileUserView from "@/views/ProfileUserView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    // Rutas para usuarios no autenticados (GuestLayout)
     {
-      path: '/',
-      name: 'guest',
+      path: "/",
       component: GuestLayout,
       children: [
-        { path: '/', name: 'login', component: LoginView },
-        { path: 'register', name: 'register', component: RegisterView },
-      ]
+        { path: "/", name: "login", component: LoginView },
+        { path: "register", name: "register", component: RegisterView },
+      ],
     },
+
     {
-      path: '/home',
-      name: 'Home',
-      component: HomeView, // Ruta Home
+      path: "/",
+      component: NavBarLayout,
+      children: [
+        { path: "perfil", name: "perfil", component: ProfileUserView },
+      ],
     },
+
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue'),
+      path: "/about",
+      name: "about",
+      component: () =>
+        import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
     },
   ],
-})
+});
 
-export default router
+export default router;

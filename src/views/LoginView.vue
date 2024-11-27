@@ -32,7 +32,7 @@ const login = async () => {
     }
 
     // Redirige al Home
-    router.push("/home");
+    router.push("/perfil");
   } catch (error) {
     console.error("Error al iniciar sesión:", error.message);
     alert("Correo o contraseña incorrectos.");
@@ -59,7 +59,7 @@ const loginWithGoogle = async () => {
 
     userStore.setUserName(user.displayName); // Guardar el nombre del usuario en el estado
 
-    router.push("/home"); // Redirigir al Home
+    router.push("/perfiluser"); // Redirigir al Home
   } catch (error) {
     console.error("Error al iniciar sesión con Google:", error.message);
     alert("No se pudo iniciar sesión con Google.");
