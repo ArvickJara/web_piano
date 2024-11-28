@@ -37,8 +37,9 @@ const router = createRouter({
         { path: "historia", name: "historia", component: HistoriaView },
         { path: "ranking", name: "ranking", component: RankingView },
         { path: "juego", name: "juego", component: JugarView },
-        { path: "niveles", name: "niveles", component: NivelesView},
+        { path: "niveles", name: "niveles", component: NivelesView },
         { path: "", name: "home", component: HomeView }, // Ruta de inicio por defecto
+        { path: "historia", name: "historia", component: HistoriaView },
       ],
     },
 
