@@ -9,38 +9,54 @@
 
     <!-- Campo para el nombre de usuario -->
     <div class="username-container">
-      <input type="text" placeholder="Nombre del usuario" class="username-input" />
+      <input 
+        type="text" 
+        v-model="userName" 
+        placeholder="Nombre del usuario" 
+        class="username-input" 
+      />
       <button class="edit-btn">
         ✏️
       </button>
     </div>
 
     <!-- Botón guardar -->
-    <button class="save-btn">Guardar</button>
+    <button class="save-btn" @click="saveUserName">Guardar</button>
 
     <!-- Enlace para cerrar sesión -->
     <a href="#" class="logout-link" @click.prevent="logout">Cerrar sesión</a>
   </div>
 </template>
-
 <script>
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase"; // Ajusta la ruta a tu configuración de Firebase
+import { useUserStore } from "../stores/user"; // Ajusta la ruta a tu store de usuario
 
 export default {
   name: "ProfileUserView",
+  computed: {
+    userName() {
+      const userStore = useUserStore();
+      return userStore.userName || "Usuario"; // Valor por defecto
+    },
+  },
   methods: {
     async logout() {
       try {
         await signOut(auth);
         alert("Sesión cerrada con éxito");
-        this.$router.push("/");
+        this.$router.push("/"); // Redirige a la página de inicio
       } catch (error) {
         console.error("Error al cerrar sesión:", error.message);
         alert("Ocurrió un error al cerrar sesión. Intenta nuevamente.");
       }
-    }
-  }
+    },
+    saveUserName() {
+      const userStore = useUserStore();
+      userStore.userName = this.userName; // Guarda el nombre de usuario editado en el store
+      alert("Nombre de usuario guardado con éxito");
+    },
+  },
 };
 </script>
 

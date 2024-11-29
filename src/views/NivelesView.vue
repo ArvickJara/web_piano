@@ -1,118 +1,123 @@
 <template>
-    <div class="game-levels-container">
-      <h1 class="title">Niveles del Juego</h1>
-      <div class="path">
-        <div v-for="(level, index) in levels" :key="index" class="level" :class="{'unlocked': level.unlocked}">
-          <div class="level-icon">{{ index + 1 }}</div>
-          <div v-if="index !== levels.length - 1" class="line"></div>
-        </div>
+  <div class="levels-container">
+    <!-- Niveles -->
+    <div
+      v-for="(level, index) in levels"
+      :key="index"
+      class="level"
+      :class="{ unlocked: level.unlocked }"
+      :style="getLevelPosition(index)"
+    >
+      <div class="level-icon">
+        {{ index + 1 }}
+        <span v-if="level.unlocked" class="star">★</span>
       </div>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    name: "NivelesView",
-    data() {
-      return {
-        levels: [
-          { unlocked: true },  // Nivel 1 desbloqueado
-          { unlocked: false }, // Nivel 2 aún no desbloqueado
-          { unlocked: false }, // Nivel 3 aún no desbloqueado
-          { unlocked: false }, // Nivel 4 aún no desbloqueado
-          { unlocked: false }  // Nivel 5 aún no desbloqueado
-        ]
-      };
-    }
-  };
-  </script>
-  
-  <style scoped>
-  /* Contenedor de los niveles */
-  .game-levels-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #f0f4f8;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 350px;
-    margin: auto;
+  </div>
+</template>
+
+<script>
+export default {
+  name: "GameLevels",
+  data() {
+    return {
+      levels: [
+        { unlocked: true },
+        { unlocked: true },
+        { unlocked: false },
+        { unlocked: false },
+        { unlocked: false },
+        { unlocked: false },
+      ],
+    };
+  },
+  methods: {
+    getLevelPosition(index) {
+      const positions = [
+        { top: "420px", left: "40px" },
+        { top: "360px", left: "120px" },
+        { top: "290px", left: "200px" },
+        { top: "210px", left: "150px" },
+        { top: "130px", left: "70px" },
+        { top: "40px", left: "150px" },
+      ];
+      return positions[index] || {};
+    },
+  },
+};
+</script>
+
+<style scoped>
+.levels-container {
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+  position: relative;
+  height: 500px;
+  background-color: transparent; /* Fondo transparente */
+}
+
+.level {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+.level-icon {
+  width: 50px;
+  height: 50px;
+  background-color: #ffcc00;
+  color: #000;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 3px solid #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+.level-icon .star {
+  color: #ffd700;
+  font-size: 1rem;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+}
+
+.level.unlocked .level-icon {
+  background: linear-gradient(135deg, #42a5f5, #7e57c2);
+  color: #fff;
+  animation: glow 1.5s infinite alternate;
+}
+
+.level.unlocked .level-icon .star {
+  display: block;
+}
+
+.level-icon:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 16px rgba(255, 215, 0, 0.5);
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px #42a5f5, 0 0 20px #7e57c2;
   }
-  
-  /* Título */
-  .title {
-    color: #333;
-    font-size: 1.8rem;
-    margin-bottom: 20px;
+  to {
+    box-shadow: 0 0 20px #7e57c2, 0 0 30px #42a5f5;
   }
-  
-  /* Camino */
-  .path {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    width: 100%;
-  }
-  
-  /* Nivel */
-  .level {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    margin-bottom: 20px;
-    width: 40px;
-  }
-  
-  /* Línea entre los niveles */
-  .line {
-    width: 2px;
-    height: 30px;
-    background-color: #8c52e5;
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  
-  /* Icono del nivel */
-  .level-icon {
-    width: 40px;
-    height: 40px;
-    background-color: #8c52e5;
-    color: #fff;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1rem;
-    font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Estado desbloqueado */
-  .unlocked .level-icon {
-    background-color: #28a745; /* Verde para niveles desbloqueados */
-    box-shadow: 0 4px 8px rgba(0, 128, 0, 0.3);
-  }
-  
-  /* Animación de desbloqueo */
-  .level.unlocked {
-    animation: unlock 0.5s ease-out;
-  }
-  
-  @keyframes unlock {
-    from {
-      transform: scale(0.5);
-      opacity: 0;
-    }
-    to {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-  </style>
-  
+}
+
+.level:not(.unlocked) .level-icon {
+  background-color: #bdbdbd;
+  color: #757575;
+  border: 3px solid #9e9e9e;
+}
+
+.level:not(.unlocked) .level-icon:hover {
+  transform: scale(1.05);
+}
+</style>
