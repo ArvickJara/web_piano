@@ -39,20 +39,7 @@ export default {
 
 <style scoped>
 
-.historia {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: linear-gradient(135deg, #f7c6c6, #e3f7ff);
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s;
-}
 
-.historia:hover {
-  transform: scale(1.02);
-}
 
 .profile-card {
   text-align: center;

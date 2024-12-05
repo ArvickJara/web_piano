@@ -1,6 +1,6 @@
 // src/firebase.js
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore"; // Para Firestore
+import { getFirestore ,addDoc ,collection,query,getDocs,updateDoc,where} from "firebase/firestore"; // Para Firestore
 import { getAuth, GoogleAuthProvider } from "firebase/auth"; // Para autenticación
 
 // Configuración de Firebase
@@ -21,4 +21,4 @@ const db = getFirestore(app); // Base de datos
 const auth = getAuth(app);    // Autenticación
 const googleProvider = new GoogleAuthProvider();
 
-export { db, auth, googleProvider };
+export { db, auth,addDoc ,getDocs,query,collection, googleProvider ,updateDoc,where};

@@ -1,20 +1,20 @@
 <template>
+  <div class="navbar-layout">
+    <header class="header-bar">
+      <div class="header-content">
+        <!-- Puntos en el lado izquierdo -->
+        <div class="points">
+          <span class="points-count">{{ userPoints }} puntos</span>
+        </div>
 
-<div class="navbar-layout">
-  <header class="header-bar">
-  <div class="header-content">
-    <!-- Puntos en el lado izquierdo -->
-    <div class="points">
-      <span class="points-count">100 puntos</span>
-    </div>
+        <!-- Nombre de usuario y foto de perfil en el lado derecho -->
+        <div class="user-info">
+          <span class="user-name">{{ userName }}</span>
+          <img src="/public/1000007284.svg" alt="Foto de perfil" class="profile-pic" />
+        </div>
+      </div>
+    </header>
 
-    <!-- Nombre de usuario y foto de perfil en el lado derecho -->
-    <div class="user-info">
-      <span class="user-name">Nombre de Usuario</span>
-      <img src="/public/1000007284.svg" alt="Foto de perfil" class="profile-pic" />
-    </div>
-  </div>
-</header>
     <!-- Menú lateral -->
     <menu class="menu">
       <button class="menu__item active">
@@ -62,76 +62,108 @@
     <!-- Aquí se agrega el <router-view> para renderizar las vistas hijas -->
     <router-view />
   </div>
-
 </template>
 
 <script>
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase"
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const buttons = document.querySelectorAll(".menu__item");
-  let activeButton = document.querySelector(".menu__item.active");
+export default {
+  data() {
+    return {
+      userName: "Cargando...", // Estado inicial para el nombre de usuario
+      userPoints: 0, // Estado inicial para los puntos del usuario
+    };
+  },
+  mounted() {
+    // Detectar cambios de sesión y obtener los datos del usuario
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // Si el usuario está autenticado, mostrar su nombre o email
+        this.userName = user.displayName || user.email || "Usuario";
 
-  buttons.forEach(item => {
-    const text = item.querySelector(".menu__text");
-    setLineWidth(text, item);
-
-    window.addEventListener("resize", () => {
-      setLineWidth(text, item);
-    });
-
-    item.addEventListener("click", function() {
-      if (this.classList.contains("active")) return;
-
-      // Remueve la clase activa de la opción previamente activa
-      if (activeButton) {
-        activeButton.classList.remove("active");
-        activeButton.querySelector(".menu__text").classList.remove("active");
+        // Obtener los puntos del usuario desde Firestore
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (userDoc.exists()) {
+          this.userPoints = userDoc.data().puntos || 0; // Obtener los puntos
+        } else {
+          console.error("Documento de usuario no encontrado");
+        }
+      } else {
+        // Si no hay usuario, redirigir al inicio de sesión
+        this.userName = "No identificado";
+        window.location.href = "/";
       }
-
-      // Agrega la clase activa a la opción actual y su texto
-      this.classList.add("active");
-      this.querySelector(".menu__text").classList.add("active");
-      activeButton = this;
-
-      handleTransition(this, text);
     });
-  });
 
-  function setLineWidth(text, item) {
-    const lineWidth = text.offsetWidth + "px";
-    item.style.setProperty("--lineWidth", lineWidth);
-  }
+    // Lógica de menú
+    const buttons = document.querySelectorAll(".menu__item");
+    let activeButton = document.querySelector(".menu__item.active");
 
-  function handleTransition(item, text) {
-    item.addEventListener("transitionend", (e) => {
-      if (e.propertyName != "flex-grow" || !item.classList.contains("active")) return;
-      text.classList.add("active");
+    buttons.forEach((item) => {
+      const text = item.querySelector(".menu__text");
+      this.setLineWidth(text, item);
+
+      window.addEventListener("resize", () => {
+        this.setLineWidth(text, item);
+      });
+
+      item.addEventListener("click", function () {
+        if (this.classList.contains("active")) return;
+
+        // Remueve la clase activa de la opción previamente activa
+        if (activeButton) {
+          activeButton.classList.remove("active");
+          activeButton.querySelector(".menu__text").classList.remove("active");
+        }
+
+        // Agrega la clase activa a la opción actual y su texto
+        this.classList.add("active");
+        this.querySelector(".menu__text").classList.add("active");
+        activeButton = this;
+
+        this.handleTransition(this, text);
+      });
     });
-  }
 
-  // Agregar la lógica de cierre de sesión
-  document.querySelector(".logout-button").addEventListener("click", async () => {
-    try {
-      await signOut(auth);
-      alert("Sesión cerrada con éxito");
-      window.location.href = "/"; // Redirige al inicio
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error.message);
-      alert("Ocurrió un error al cerrar sesión. Intenta nuevamente.");
-    }
-  });
-});
+    // Agregar la lógica de cierre de sesión
+    document.querySelector(".logout-button").addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        alert("Sesión cerrada con éxito");
+        window.location.href = "/"; // Redirige al inicio
+      } catch (error) {
+        console.error("Error al cerrar sesión:", error.message);
+        alert("Ocurrió un error al cerrar sesión. Intenta nuevamente.");
+      }
+    });
+  },
+  methods: {
+    setLineWidth(text, item) {
+      const lineWidth = text.offsetWidth + "px";
+      item.style.setProperty("--lineWidth", lineWidth);
+    },
+    handleTransition(item, text) {
+      item.addEventListener("transitionend", (e) => {
+        if (e.propertyName != "flex-grow" || !item.classList.contains("active")) return;
+        text.classList.add("active");
+      });
+    },
+  },
+};
 </script>
+
 
 <style scoped>
 .header-bar {
-  background-color: #f8f9fa; /* Fondo claro */
+  background-color: #fefefe; /* Fondo claro */
   padding: 10px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-radius: 30px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -147,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
   font-weight: bold;
   color: #333; /* Texto oscuro */
   padding: 5px 10px; /* Espaciado interno */
-  border: 2px solid #6a0dad; /* Borde morado */
+  border: 2px solid #4630eb; /* Borde morado */
   border-radius: 20px; /* Bordes redondeados */
   background-color: #f3e9ff; /* Fondo suave morado */
 }
@@ -161,9 +193,9 @@ document.addEventListener("DOMContentLoaded", () => {
 .user-name {
   font-size: 14px;
   font-weight: bold;
-  color: #6a0dad; /* Texto morado */
+  color: #4630eb; /* Texto morado */
   padding: 5px 10px; /* Espaciado interno */
-  border: 2px solid #6a0dad; /* Borde morado */
+  border: 2px solid #4630eb; /* Borde morado */
   border-radius: 20px; /* Bordes redondeados */
   background-color: #f3e9ff; /* Fondo suave morado */
 }
@@ -173,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
   height: 40px;
   border-radius: 50%; /* Imagen circular */
   object-fit: cover;
-  border: 2px solid #6a0dad; /* Borde morado */
+  border: 2px solid #4630eb; /* Borde morado */
 }
 /*-----------------------*/
 .menu {
@@ -188,13 +220,19 @@ document.addEventListener("DOMContentLoaded", () => {
   left: 50%;
   transform: translateX(-50%); /* Centra el menú horizontalmente */
   user-select: none;
-  background-color: #fefefe;
+  background-color: rgba(255, 255, 255, 0.8); /* Fondo semitransparente */
+  backdrop-filter: blur(10px); /* Efecto de desenfoque */
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   padding: 0 1.9em; /* Ajusta el espaciado si es necesario */
   border-radius: 10px;
   z-index: 1000;
   -webkit-tap-highlight-color: transparent;
   flex-wrap: nowrap; /* Evita que los elementos se ajusten en móviles */
+  pointer-events: none; /* Permite interactuar con el contenido detrás */
+}
+
+.menu * {
+  pointer-events: auto; /* Habilita la interacción solo dentro del menú */
 }
 
 @media (max-width: 42.625em) {
@@ -325,7 +363,7 @@ document.addEventListener("DOMContentLoaded", () => {
 .iconify {
 
     --duration-icon: 1s ;
-    
+    color:#4630eb;
     fill: none ; 
     width: 2.5em ;
     height: 2.5em ;

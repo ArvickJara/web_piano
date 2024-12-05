@@ -26,12 +26,15 @@ export default {
         });
 
         const userId = userCredential.user.uid;
+        // Agregar los campos puntos y nivel con valores iniciales
         await setDoc(doc(db, "users", userId), {
           username: this.username,
           email: this.email,
+          puntos: 0, // Nuevo campo
+          nivel: 1,  // Nuevo campo
         });
 
-        this.$router.push("/home");
+        this.$router.push("/perfil");
         alert("Registro exitoso");
       } catch (error) {
         console.error("Error al registrar: ", error.message);
@@ -41,6 +44,7 @@ export default {
   },
 };
 </script>
+
 
 <template>
   <GuestLayout>
